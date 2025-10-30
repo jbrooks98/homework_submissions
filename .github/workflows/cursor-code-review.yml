@@ -1,32 +1,29 @@
-name: Cursor Candidate Code Review
+name: Cursor Code Review
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
-
-permissions:
-  pull-requests: write
-  contents: read
-
+    types: [opened, synchronize, reopened, ready_for_review]
 jobs:
-  review:
+  code-review:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
-      - name: Checkout PR
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.sha }}
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Install Cursor CLI
-        run: |
-          curl https://cursor.com/install -fsS | bash
-          echo "$HOME/.cursor/bin" >> $GITHUB_PATH
+    - name: Install Cursor CLI
+      run: |
+        curl https://cursor.com/install -fsS | bash
+        echo "$HOME/.cursor/bin" >> $GITHUB_PATH
       
-      - name: Get code review from Cursor
-        env:
-          CURSOR_API_KEY: ${{ secrets.CURSOR_TOKEN }}
-        run: |
-          cursor-agent -p "${{ secrets.SENIOR_REVIEW }}" --model gpt-5
-        # cursor agent review --diff-only --prompt-mode ${{ secrets.SENIOR_REVIEW }}
-        #env:
-        #  CANDIDATE_LEVEL: ${{ github.event.pull_request.head.ref }}
+    - name: Get code review from Cursor
+      env:
+        CURSOR_API_KEY: ${{ secrets.CURSOR_TOKEN }}
+      run: |
+        cursor-agent --force --model gpt-5 --output-format=text --print "You are operating in a GitHub Actions runner performing automated code review. The gh CLI is available and authenticated via GH_TOKEN. You may comment on pull requests.
+
+     #cursor-agent --force --model "$MODEL" --output-format=text --print "You are operating in a GitHub Actions runner performing automated code review. The gh CLI is available and authenticated via GH_TOKEN. You may comment on pull requests.
