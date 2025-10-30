@@ -19,7 +19,7 @@ jobs:
 
       - name: Install Cursor CLI
         run: |
-          curl -fsSL https://cursor.sh/install.sh | bash
+          curl https://cursor.com/install -fsS | bash
           echo "$HOME/.cursor/bin" >> $GITHUB_PATH
 
       - name: Configure Cursor
