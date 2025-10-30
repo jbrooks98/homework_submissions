@@ -1,0 +1,33 @@
+name: Cursor Candidate Code Review
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Install Cursor CLI
+        run: |
+          curl -fsSL https://cursor.sh/install.sh | bash
+          echo "$HOME/.cursor/bin" >> $GITHUB_PATH
+
+      - name: Configure Cursor
+        run: |
+          cursor auth login --token ${{ secrets.CURSOR_TOKEN }}
+      
+      - name: Get code review from Cursor
+        run: |
+          cursor agent review --diff-only --prompt-mode "<CANDIDATE_LEVEL>_REVIEW"
+        env:
+          CANDIDATE_LEVEL: ${{ github.event.pull_request.head.ref }}
