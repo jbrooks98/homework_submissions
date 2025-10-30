@@ -24,10 +24,10 @@ jobs:
 
       - name: Configure Cursor
         run: |
-          cursor auth login --token ${{ secrets.CURSOR_TOKEN }}
+          cursor-agent --api-key ${{ secrets.CURSOR_TOKEN }}
       
       - name: Get code review from Cursor
         run: |
-          cursor agent review --diff-only --prompt-mode "SENIOR_REVIEW"
+          cursor agent review --diff-only --prompt-mode ${{ secrets.SENIOR_REVIEW }}
         env:
           CANDIDATE_LEVEL: ${{ github.event.pull_request.head.ref }}
