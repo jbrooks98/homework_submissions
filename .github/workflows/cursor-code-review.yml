@@ -24,7 +24,7 @@ jobs:
       
       - name: Get code review from Cursor
         env:
-          CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+          CURSOR_API_KEY: ${{ secrets.CURSOR_TOKEN }}
         run: |
           cursor agent review --diff-only --prompt-mode ${{ secrets.SENIOR_REVIEW }}
         #env:
