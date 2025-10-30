@@ -20,9 +20,10 @@ jobs:
         curl https://cursor.com/install -fsS | bash
         echo "$HOME/.cursor/bin" >> $GITHUB_PATH
       
-    - name: Get code review from Cursor
+    - name: Perform code review
       env:
         CURSOR_API_KEY: ${{ secrets.CURSOR_TOKEN }}
+        GH_TOKEN: ${{ github.token }}
       run: |
         cursor-agent --force --model gpt-5 --output-format=text --print "You are operating in a GitHub Actions runner performing automated code review. The gh CLI is available and authenticated via GH_TOKEN. You may comment on pull requests."
 
