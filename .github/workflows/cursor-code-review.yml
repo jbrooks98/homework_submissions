@@ -21,13 +21,11 @@ jobs:
         run: |
           curl https://cursor.com/install -fsS | bash
           echo "$HOME/.cursor/bin" >> $GITHUB_PATH
-
-      - name: Configure Cursor
-        run: |
-          cursor-agent --api-key ${{ secrets.CURSOR_TOKEN }}
       
       - name: Get code review from Cursor
+        env:
+          CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
         run: |
           cursor agent review --diff-only --prompt-mode ${{ secrets.SENIOR_REVIEW }}
-        env:
-          CANDIDATE_LEVEL: ${{ github.event.pull_request.head.ref }}
+        #env:
+        #  CANDIDATE_LEVEL: ${{ github.event.pull_request.head.ref }}
